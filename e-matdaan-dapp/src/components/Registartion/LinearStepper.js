@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Typography,
   TextField,
@@ -14,16 +14,16 @@ import {
   FormProvider,
   useFormContext,
 } from "react-hook-form";
-//import { db } from "./fire";
 
-//import fire from "./fire";
+import axios from 'axios';
 
-//import {db} from "./fire";
 const useStyles = makeStyles((theme) => ({
   button: {
     marginRight: theme.spacing(1),
   },
 }));
+
+
 
 function getSteps() {
   return [
@@ -35,26 +35,29 @@ function getSteps() {
 }
 const BasicForm = () => {
   const { control } = useFormContext();
+  const firstName = useRef('');;
   return (
     <>
 
-<Controller
+      <Controller
         control={control}
-        name="emailAddress"
+        name="email"
         render={({ field }) => (
           <TextField
+            ref='myTextField'
             id="email-address"
             label="E-mail Address"
             variant="outlined"
             placeholder="Enter Your E-mail Address"
             fullWidth
             margin="normal"
+            inputRef={firstName}
             {...field}
           />
         )}
       />
 
-       <Controller
+      <Controller
         control={control}
         name="phoneNumber"
         render={({ field }) => (
@@ -69,21 +72,6 @@ const BasicForm = () => {
           />
         )}
       />
-      {/* <Controller
-        control={control}
-        name="alternatePhone"
-        render={({ field }) => (
-          <TextField
-            id="alternate-phone"
-            label="Alternate Phone"
-            variant="outlined"
-            placeholder="Enter Your Alternate Phone"
-            fullWidth
-            margin="normal"
-            {...field}
-          />
-        )}
-      /> */}
 
       <Controller
         control={control}
@@ -125,7 +113,7 @@ const ContactForm = () => {
   const { control } = useFormContext();
   return (
     <>
-    <Controller
+      <Controller
         control={control}
         name="firstName"
         render={({ field }) => (
@@ -190,7 +178,7 @@ const ContactForm = () => {
         )}
       />
 
-<Controller
+      <Controller
         control={control}
         name="userDOB"
         render={({ field }) => (
@@ -209,7 +197,7 @@ const ContactForm = () => {
 
 
 
-     
+
     </>
   );
 };
@@ -233,7 +221,7 @@ const PersonalForm = () => {
         )}
       />
 
-<Controller
+      <Controller
         control={control}
         name="address2"
         render={({ field }) => (
@@ -258,7 +246,7 @@ const PersonalForm = () => {
             label="State"
             variant="outlined"
             placeholder="State Ex Maharashtra"
-            style={{width:"30%"}}
+            style={{ width: "30%" }}
             margin="normal"
             {...field}
           />
@@ -273,24 +261,24 @@ const PersonalForm = () => {
             label="District"
             variant="outlined"
             placeholder="Enter Your District Name"
-            style={{width:"30%"}, {marginLeft:"20px"}}
+            style={{ width: "30%" }, { marginLeft: "20px" }}
             margin="normal"
             {...field}
           />
         )}
       />
 
-<Controller
+      <Controller
         control={control}
         name="userPinCode"
         render={({ field }) => (
           <TextField
-          type="Number"
+            type="Number"
             id="pin-code"
             label="PIN Code"
             variant="outlined"
             placeholder="Enter Your PIN Code"
-            style={{width:"30%"}, {marginLeft:"20px"}}
+            style={{ width: "30%" }, { marginLeft: "20px" }}
             margin="normal"
             {...field}
           />
@@ -308,42 +296,43 @@ const PaymentForm = () => {
         name="aadharNumber"
         render={({ field }) => (
           <div>
-          <TextField
-            id="aadharNumber"
-            label="Aadhar Card Number"
-            variant="outlined"
-            placeholder="Enter Your Aadhar Card Number"
-            style={{width:"50%"}}
-            margin="normal"
-            {...field}
-          />
-                <div style={{width:"100px"}, {marginBottom:"20px"}}><input type="file" id="myfile" name="myfile" /> </div>
-                
+            <TextField
+              id="aadharNumber"
+              label="Aadhar Card Number"
+              variant="outlined"
+              placeholder="Enter Your Aadhar Card Number"
+              style={{ width: "50%" }}
+              margin="normal"
+              {...field}
+            />
+            <div style={{ width: "100px" }, { marginBottom: "20px" }}><input type="file" id="myfile" name="myfile" /> </div>
+
 
           </div>
         )}
       />
-    
+
 
       <Controller
         control={control}
         name="voterCard"
         render={({ field }) => (
           <div>
-          <TextField
-            id="voterCard"
-            label="EPIC Number"
-            variant="outlined"
-            placeholder="Enter Your EPIC Number"
-            style={{width:"50%"}}
-            margin="normal"
-            {...field}
-          />
-          <div style={{width:"100px"}, {marginBottom:"20px"}}><input type="file" id="myfile" name="myfile" /> </div>
+            <TextField
+              id="voterCard"
+              name="epicNumber"
+              label="EPIC Number"
+              variant="outlined"
+              placeholder="Enter Your EPIC Number"
+              style={{ width: "50%" }}
+              margin="normal"
+              {...field}
+            />
+            <div style={{ width: "100px" }, { marginBottom: "20px" }}><input type="file" id="myfile" name="myfile" /> </div>
           </div>
         )}
       />
-     
+
     </>
   );
 };
@@ -372,47 +361,49 @@ const LinaerStepper = () => {
       lastName: "",
       userName: "",
       password: "",
-      emailAddress: "",
-      userAge:0,
-      userGender:"",
+      email: "",
+      userAge: 0,
+      userGender: "",
       phoneNumber: "",
       alternatePhone: "",
       address1: "",
       address2: "",
       country: "",
-      userState:"",
-      userDistrict:"",
+      userState: "",
+      userDistrict: "",
       aadharNumber: "",
       epicNumber: "",
-      
+
     },
   });
   const [activeStep, setActiveStep] = useState(0);
   const [skippedSteps, setSkippedSteps] = useState([]);
   const steps = getSteps();
 
-  // const isStepOptional = (step) => {
-  //   return step === 1 || step === 2;
-  // };
+  
 
-  // const isStepSkipped = (step) => {
-  //   return skippedSteps.includes(step);
-  // };
+  const handleClick =  (data) => {
+    axios.post("http://localhost:3000/users/register", {}, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      },
+      params: data
+    }).then(function (response) {
+      console.log(response.data)
+    }).catch(function (error) {
+      console.log(error)
+    })
+  };
+
 
   const handleNext = (data) => {
-    console.log(data);
     if (activeStep == steps.length - 1) {
-      // db.collection("users").add({
-
-      // })
-      // .then(()=>{
-      //   alert("Registered")
-      // })
-      // .catch((error)=> {
-        //alert(error.message);
-      // });
+      
+      handleClick(data);
+     
       setActiveStep(activeStep + 1);
-        
+
     } else {
       setActiveStep(activeStep + 1);
       setSkippedSteps(
@@ -437,7 +428,7 @@ const LinaerStepper = () => {
   // };
   return (
     <div >
-      <div style={{marginTop:"10px"}}>
+      <div style={{ marginTop: "10px" }}>
         <Typography variant="h3" align="center">
           Registration
         </Typography>
@@ -475,18 +466,18 @@ const LinaerStepper = () => {
       ) : (
         <>
           <FormProvider {...methods}>
-          <div style={{padding:"10px"}}>
-            <form onSubmit={methods.handleSubmit(handleNext)}>
-              {getStepContent(activeStep)}
-              <div></div>
-              <Button
-                className={classes.button}
-                disabled={activeStep === 0}
-                onClick={handleBack}
-              >
-                back
-              </Button>
-              {/* {isStepOptional(activeStep) && (
+            <div style={{ padding: "10px" }}>
+              <form onSubmit={methods.handleSubmit(handleNext)}>
+                {getStepContent(activeStep)}
+                <div></div>
+                <Button
+                  className={classes.button}
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                >
+                  back
+                </Button>
+                {/* {isStepOptional(activeStep) && (
                 <Button
                   className={classes.button}
                   variant="contained"
@@ -496,16 +487,16 @@ const LinaerStepper = () => {
                   skip
                 </Button>
               )} */}
-              <Button
-                className={classes.button}
-                variant="contained"
-                color="primary"
-                // onClick={handleNext}
-                type="submit"
-              >
-                {activeStep === steps.length - 1 ? "Finish" : "Next"}
-              </Button>
-            </form>
+                <Button
+                  className={classes.button}
+                  variant="contained"
+                  color="primary"
+                  // onClick={handleNext}
+                  type="submit"
+                >
+                  {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                </Button>
+              </form>
             </div>
           </FormProvider>
         </>

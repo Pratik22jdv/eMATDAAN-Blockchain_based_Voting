@@ -10,6 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "mongoose": "^7.0.3"
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "helmet": "^6.1.5",
+    "mongoose": "^7.0.3",
+    "morgan": "^1.10.0"
   }
 }
