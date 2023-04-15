@@ -71,6 +71,9 @@ const User = new Schema(
     email: {
       type: String,
     },
+    password: {
+      type: String,
+    }
   },
   { timestamps: true }
 );
