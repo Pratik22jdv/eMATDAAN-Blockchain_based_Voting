@@ -1,6 +1,7 @@
 import './App.css';
 import Navbar from './components/Navbar';
 import Registration from './components/Registartion/Registration';
+import Login from './components/Login/Login';
 
 function App() {
   return (
@@ -9,9 +10,15 @@ function App() {
         <Navbar />
       </div>
       
-      <div className="RegistartionForm">
+      {/* <div className="RegistartionForm">
         <Registration />
+      </div> */}
+
+      <div className="LoginForm">
+        <Login />
       </div>
+
+
     </div>
   );
 }
