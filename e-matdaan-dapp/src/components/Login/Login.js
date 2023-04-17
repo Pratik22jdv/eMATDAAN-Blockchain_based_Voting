@@ -10,15 +10,17 @@ import {
   MDBIcon,
   MDBInput
 }
+
   from 'mdb-react-ui-kit';
+  import {useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function Login() {
 
   const emailRef = useRef();
   const passwordRef = useRef();
-  const [isAuth, setIsAuth] = useState(false);
-  // 
+  const navigate = useNavigate();
+  
   // const email = "";
 
   // const fun = ()=>{
@@ -44,12 +46,12 @@ function Login() {
       {  
         console.log(response.data.user);
         localStorage.setItem("user", response.data.user);
-        setIsAuth(true);
+        window.location.reload(false);
+        navigate("/login");
       }
       else 
       {
         console.log(response.data.message);
-        setIsAuth(false);
       }
     }).catch(function (error) {
       console.log(error)
@@ -117,7 +119,6 @@ function Login() {
                 {/* <MDBInput wrapperClass='mb-4' label='Password' id='formControlLg' type='password' size="lg" ref={password} onChange={fun}/> */}
 
                 <MDBBtn className="mb-12 px-5" color='dark' size='lg' onClick={handleSubmit}>Login</MDBBtn>
-                {isAuth ? <><button onClick={userAuthenticated}>checkIfAuth</button></> : <div></div>}
                 <a className="small text-muted" href="#!">Forgot password?</a>
                 <p className="mb-5 pb-lg-2" style={{ color: '#393f81' }}>Don't have an account? <a href="#!" style={{ color: '#393f81' }}>Register here</a></p>
 
