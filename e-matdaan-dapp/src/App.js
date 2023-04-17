@@ -1,22 +1,39 @@
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route
+} from "react-router-dom";
+
 import './App.css';
 import Navbar from './components/Navbar';
+import Home from "./components/Home/Home";
 import Registration from './components/Registartion/Registration';
 import Login from './components/Login/Login';
+import Admin from "./components/Admin/Admin";
 
 function App() {
+
+  const user = localStorage.getItem("user");
+  // const user = false;
+
+
   return (
     <div>
-      <div className="Navbar">
-        <Navbar />
-      </div>
-      
-      {/* <div className="RegistartionForm">
-        <Registration />
-      </div> */}
+      <Router>
+        <div>
+          <Navbar />
+        </div>
+        <Routes>
 
-      <div className="LoginForm">
-        <Login />
-      </div>
+        <Route exact path="/" element={<Home/>} />
+
+          <Route path="/login" element= {user? <Admin /> : <Login /> } />
+
+          <Route path="/register" element={<Registration />} />
+
+        </Routes>
+      </Router>
 
 
     </div>

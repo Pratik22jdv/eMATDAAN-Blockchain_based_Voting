@@ -40,10 +40,17 @@ function Login() {
       },
       params: data
     }).then(function (response) {
-      console.log(response.data);
-      console.log(response.data.token);
-      setIsAuth(true);
-      localStorage.setItem("token", response.data.token);
+      if(response.data.auth)
+      {  
+        console.log(response.data.user);
+        localStorage.setItem("user", response.data.user);
+        setIsAuth(true);
+      }
+      else 
+      {
+        console.log(response.data.message);
+        setIsAuth(false);
+      }
     }).catch(function (error) {
       console.log(error)
     })
@@ -62,15 +69,11 @@ function Login() {
     // console.log(token);
     axios.get("http://localhost:3000/users/isAuth", {}, {
       headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      },
-      params: data
+        "x-access-token": localStorage.getItem("token"),
+      }
     }).then(function (response) {
       console.log(response.data);
       console.log(response.data.token);
-      setIsAuth(true);
-      localStorage.setItem("token", response.data.token);
     }).catch(function (error) {
       console.log(error)
     })

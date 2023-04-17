@@ -43,7 +43,8 @@ router.post('/register', async (req, res) => {
 //JWT Login
 router.post('/login', async (req, res, next) => {
     try {
-        // console.log("email" + req.query.email);
+        console.log(req.session);
+        console.log("email" + req.query.email);
         const user = await User.findOne({ email: req.query.email });
 
         if (!user) res.json({auth:false, message: "user not found" });
@@ -63,10 +64,9 @@ router.post('/login', async (req, res, next) => {
                 },
                     'JWT_secret_key',
                     {
-                        expiresIn: "24h"
+                        expiresIn: 300,
                     });
-
-
+                // req.session.user = user;
                 res.status(200).json(
                     { auth:true, user, token }
                 );
@@ -78,9 +78,7 @@ router.post('/login', async (req, res, next) => {
 });
 
 const verifyJWT = (req, res, next) => {
-    console.log(req.query.token);
-    console.log(req.query.extra);
-    const token = req.query.token;
+    const token = req.headers["x-access-token"];
     console.log(token);
     if (!token) {
         res.send("No Token");
@@ -88,6 +86,7 @@ const verifyJWT = (req, res, next) => {
     else {
         jwt.verify(token, "JWT_secret_key", (err, decode) => {
             if (err) {
+                console.log(err);
                 res.json({ auth: false, message: "Auth Failed" })
             }
             else {

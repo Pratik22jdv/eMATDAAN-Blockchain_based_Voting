@@ -1,5 +1,17 @@
+import React from "react";
+import { Link, useNavigate } from 'react-router-dom';
+
 
 function Navbar() {
+
+    const user = localStorage.getItem("user");
+
+    const navigate = useNavigate();
+    const logout =()=> {
+        localStorage.removeItem("user");
+        navigate("/login");    
+      }
+
     return (
         <div>
             <nav class="navbar navbar-light navbar-expand-lg " style={{backgroundColor: "#dbe7f0"}}>
@@ -9,12 +21,19 @@ function Navbar() {
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
+                    
                         <li class="nav-item active">
-                            <a class="nav-link" href="/">REGISTER <span class="sr-only">(current)</span></a>
+                            <Link class="nav-link" to = "/register">REGISTER <span class="sr-only">(current)</span></Link>
                         </li>
-                        <li class="nav-item active">
-                            <a class="nav-link" href="/">LOGIN</a>
-                        </li>
+
+                        {!user && (<li class="nav-item active">
+                            <Link class="nav-link" to="/login">LOGIN</Link>
+                        </li>)}
+
+                        {user && (<li class="nav-item active">
+                            <Link class="nav-link" to="/login"  onClick={logout}>Logout</Link>
+                        </li>)}
+
                         <li class="nav-item">
                             <a class="nav-link" href="/">STUTUS</a>
                         </li>
