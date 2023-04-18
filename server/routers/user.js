@@ -43,16 +43,16 @@ router.post('/register', async (req, res) => {
 //JWT Login
 router.post('/login', async (req, res, next) => {
     try {
-        console.log(req.session);
+        // console.log(req.session);
         console.log("email" + req.query.email);
         const user = await User.findOne({ email: req.query.email });
 
-        if (!user) res.json({auth:false, message: "user not found" });
+        if (!user) res.json({ auth: false, message: "user not found" });
         else {
 
             const validPassword = (req.query.password == user.password);
 
-            if (!validPassword) res.json({auth:false, message: "wrong password" });
+            if (!validPassword) res.json({ auth: false, message: "wrong password" });
 
             else {
 
@@ -68,7 +68,7 @@ router.post('/login', async (req, res, next) => {
                     });
                 // req.session.user = user;
                 res.status(200).json(
-                    { auth:true, user, token }
+                    { auth: true, user, token }
                 );
             }
         }
@@ -107,4 +107,29 @@ router.get('/login', async (req, res) => {
     }
     else res.send({ isLoggedIn: false });
 });
+
+
+//Admin auth
+const authAdmin = async (req, res, next) => {
+    const user = await User.findOne({email: req.query.adminEmail});
+    if(user && user.admin){
+        next();
+        return;
+    }
+    res.send({
+        auth: false,
+        message: "Unauthorized Access"
+    });
+}
+
+//Fetch User
+router.get('/all', async (req, res) => {
+    try {
+        const list = await User.find();
+        res.status(200).json(list);
+        // console.log(user);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+})
 module.exports = router;

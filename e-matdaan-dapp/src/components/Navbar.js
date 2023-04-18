@@ -2,13 +2,13 @@ import React from "react";
 import { Link, useNavigate } from 'react-router-dom';
 
 
-function Navbar() {
+function Navbar({user}) {
 
-    const user = localStorage.getItem("user");
+    // const user = JSON.parse(localStorage.getItem("user"));
 
     const navigate = useNavigate();
     const logout =()=> {
-        localStorage.removeItem("user");
+        localStorage.clear();
         window.location.reload(false);
         navigate("/login");    
       }

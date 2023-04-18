@@ -45,7 +45,7 @@ function Login() {
       if(response.data.auth)
       {  
         console.log(response.data.user);
-        localStorage.setItem("user", response.data.user);
+        localStorage.setItem("user", JSON.stringify(response.data.user))
         window.location.reload(false);
         navigate("/login");
       }

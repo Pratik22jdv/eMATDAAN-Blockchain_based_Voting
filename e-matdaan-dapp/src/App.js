@@ -1,4 +1,4 @@
-import React from "react";
+import {React, useState, useEffect} from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -14,22 +14,32 @@ import Admin from "./components/Admin/Admin";
 
 function App() {
 
-  const user = localStorage.getItem("user");
-  // const user = false;
+  const [user, setuser] = useState(() => {
+ 
+    // Used local storage to sustain the login state
+    if(!localStorage.getItem("user")){
+      
+      return false;
+    }
+    return JSON.parse(localStorage.getItem("user"));
+  });
   
 
+  useEffect(() => {
+    localStorage.setItem("user", JSON.stringify(user));
+  }, [user]);
 
   return (
     <div>
       <Router>
         <div>
-          <Navbar />
+          <Navbar user = {user}/>
         </div>
         <Routes>
 
         <Route exact path="/" element={<Home/>} />
 
-          <Route path="/login" element= {user? <Admin /> : <Login /> } />
+          <Route path="/login" element= {user? <Admin user={user}/> : <Login /> } />
 
           <Route path="/register" element={<Registration />} />
 
