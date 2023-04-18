@@ -1,29 +1,78 @@
 import { React, useState, useEffect } from "react";
-import axios from 'axios';
+// import axios from 'axios';
+
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+// import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import { styled } from '@mui/material/styles';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 
 function Admin({ user }) {
     const [userList, setUserList] = useState([]);
     const [x, setX] = useState(false);
 
-    const apiFetchList = ()=>{
+    const apiFetchList = () => {
         return fetch(
             `http://localhost:3000/users/all?adminEmail=${user.email}`,
             {
-              method: 'GET',
+                method: 'GET',
             }
-          )
+        )
             .then((response) => {
-              return response.json();
+                return response.json();
             })
             .catch((err) => console.log(err));
-        };
+    };
 
-    const fetchUserList =  () => {
-        apiFetchList().then((data)=>{
+    const fetchUserList = () => {
+        apiFetchList().then((data) => {
             setUserList(data);
             setX(true);
         })
     };
+
+    // function createData(
+    //     name: string,
+    //     calories: string,
+    //     fat: string,
+    //     carbs: string,
+    //     protein: Boolean,
+    // ) {
+    //     return { name, calories, fat, carbs, protein };
+    // }
+
+    const StyledTableCell = styled(TableCell)(({ theme }) => ({
+        [`&.${tableCellClasses.head}`]: {
+          backgroundColor: theme.palette.common.black,
+          color: theme.palette.common.white,
+        },
+        [`&.${tableCellClasses.body}`]: {
+          fontSize: 14,
+        },
+      }));
+      
+      const StyledTableRow = styled(TableRow)(({ theme }) => ({
+        '&:nth-of-type(odd)': {
+          backgroundColor: theme.palette.action.hover,
+        },
+        // hide last border
+        '&:last-child td, &:last-child th': {
+          border: 0,
+        },
+      }));
+
+    // const rows = [
+    //     createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+    //     createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+    //     createData('Eclair', 262, 16.0, 24, 6.0),
+    //     createData('Cupcake', 305, 3.7, 67, 4.3),
+    //     createData('Gingerbread', 356, 16.0, 49, 3.9),
+    // ];
+
 
     useEffect(() => {
         fetchUserList(user);
@@ -32,7 +81,36 @@ function Admin({ user }) {
 
     return (
         <div style={{ marginTop: "50px" }}>
-            <h1>Admin Page</h1>
+            {userList.length > 0 ? (<TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Email</TableCell>
+                            <TableCell align="right">First&nbsp;Name</TableCell>
+                            <TableCell align="right">Last&nbsp;Name</TableCell>
+                            <TableCell align="right">Aadhar&nbsp;Number</TableCell>
+                            <TableCell align="right">Approved&nbsp;</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {userList.map((userObj) => (
+                            <TableRow
+                                key={userObj.email}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                            >
+                                <StyledTableCell component="th" scope="row">
+                                    {userObj.email}
+                                </StyledTableCell>
+                                <StyledTableCell align="right">{userObj.firstName}</StyledTableCell>
+                                <StyledTableCell align="right">{userObj.lastName}</StyledTableCell>
+                                <StyledTableCell align="right">{userObj.aadharNumber}</StyledTableCell>
+                                <StyledTableCell align="right">{userObj.approved}</StyledTableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>) :
+                (<h1 style={{ color: "white" }}>Admin Portal</h1>)}
         </div>
     );
 }
