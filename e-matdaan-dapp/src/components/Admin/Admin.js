@@ -3,22 +3,32 @@ import axios from 'axios';
 
 function Admin({ user }) {
     const [userList, setUserList] = useState([]);
+    const [x, setX] = useState(false);
 
-    const fetchUserList = async (user) => {
-        try {
-            const res = await axios.get(
-                'http://localhost:3000/users/all'
-            );
-            setUserList(res);
-            console.log(userList);
-        } catch (error) {
-            console.log(error)
-        }
+    const apiFetchList = ()=>{
+        return fetch(
+            `http://localhost:3000/users/all?adminEmail=${user.email}`,
+            {
+              method: 'GET',
+            }
+          )
+            .then((response) => {
+              return response.json();
+            })
+            .catch((err) => console.log(err));
+        };
+
+    const fetchUserList =  () => {
+        apiFetchList().then((data)=>{
+            setUserList(data);
+            setX(true);
+        })
     };
 
     useEffect(() => {
         fetchUserList(user);
-    }, [user]);
+        console.log(userList)
+    }, [x]);
 
     return (
         <div style={{ marginTop: "50px" }}>

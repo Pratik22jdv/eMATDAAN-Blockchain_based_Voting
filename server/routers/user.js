@@ -123,7 +123,7 @@ const authAdmin = async (req, res, next) => {
 }
 
 //Fetch User
-router.get('/all', async (req, res) => {
+router.get('/all', authAdmin, async (req, res) => {
     try {
         const list = await User.find();
         res.status(200).json(list);
