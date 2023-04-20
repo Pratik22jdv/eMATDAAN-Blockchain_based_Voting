@@ -22,6 +22,7 @@ contract Election {
     uint256 public end;
     //store aadhar of accounts that have voted
     mapping(string => bool) private voted;
+    mapping(string => bool) private verified;
     // voted event
     // event votedEvent(uint256 indexed _candidateId);
     //addres of the user who has deployed the contract
@@ -34,6 +35,10 @@ contract Election {
 
     function endTimeFunc(uint endTime) public restricted{
         end = endTime;
+    }
+
+    function verifyUser(string memory _aadhar) public restricted{
+        verified[_aadhar]=true;
     }
 
     constructor() {
@@ -82,6 +87,10 @@ contract Election {
 
     function hasVoted(string memory _aadhar) public view returns (bool) {
         return voted[_aadhar];
+    }
+
+    function isVerified(string memory _aadhar) public view returns (bool){
+        return verified[_aadhar];
     }
 
     function isAdmin() public view returns (bool) {
