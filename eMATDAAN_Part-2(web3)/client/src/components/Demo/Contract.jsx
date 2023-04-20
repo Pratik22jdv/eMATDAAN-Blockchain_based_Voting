@@ -15,8 +15,8 @@ function Contract({ value }) {
 
   return (
     <code>
-      {`contract SimpleStorage {
-  uint256 value = `}
+      {`contract Election {
+  uint256 ADMIN = `}
 
       <span className="secondary-color" ref={spanEle}>
         <strong>{value}</strong>
@@ -24,13 +24,10 @@ function Contract({ value }) {
 
       {`;
 
-  function read() public view returns (uint256) {
-    return value;
+  function isAdmin() public view returns (uint256) {
+    return true/false;
   }
 
-  function write(uint256 newValue) public {
-    value = newValue;
-  }
 }`}
     </code>
   );

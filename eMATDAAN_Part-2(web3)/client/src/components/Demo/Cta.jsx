@@ -1,10 +1,10 @@
 function Cta() {
   return (
     <p>
-      Try changing&nbsp;
-      <span className="code">value</span>
+      Try Fetching&nbsp;
+      <span className="code">isAdmin()</span>
       &nbsp;in&nbsp;
-      <span className="code">SimpleStorage</span>.
+      <span className="code">Election.sol</span>&nbsp;based on Metamask Account.
     </p>
   );
 }

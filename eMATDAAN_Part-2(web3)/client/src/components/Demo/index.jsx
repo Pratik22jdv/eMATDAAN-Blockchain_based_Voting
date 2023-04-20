@@ -19,7 +19,6 @@ function Demo() {
         <Contract value={value} />
         <ContractBtns setValue={setValue} />
       </div>
-      <Desc />
     </>;
 
   return (

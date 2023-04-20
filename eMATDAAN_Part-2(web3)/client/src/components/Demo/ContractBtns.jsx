@@ -12,37 +12,39 @@ function ContractBtns({ setValue }) {
   };
 
   const read = async () => {
-    const value = await contract.methods.read().call({ from: accounts[0] });
-    setValue(value);
+    const value = await contract.methods.isAdmin().call({ from: accounts[0] });
+    console.log("v", value);
+    if(value)setValue("Yes");
+    else setValue("No");
   };
 
-  const write = async e => {
-    if (e.target.tagName === "INPUT") {
-      return;
-    }
-    if (inputValue === "") {
-      alert("Please enter a value to write.");
-      return;
-    }
-    const newValue = parseInt(inputValue);
-    await contract.methods.write(newValue).send({ from: accounts[0] });
-  };
+  // const write = async e => {
+  //   if (e.target.tagName === "INPUT") {
+  //     return;
+  //   }
+  //   if (inputValue === "") {
+  //     alert("Please enter a value to write.");
+  //     return;
+  //   }
+  //   const newValue = parseInt(inputValue);
+  //   await contract.methods.write(newValue).send({ from: accounts[0] });
+  // };
 
   return (
     <div className="btns">
 
       <button onClick={read}>
-        read()
+        isAdmin()
       </button>
 
-      <div onClick={write} className="input-btn">
+      {/* <div onClick={write} className="input-btn">
         write(<input
           type="text"
           placeholder="uint"
           value={inputValue}
           onChange={handleInputChange}
         />)
-      </div>
+      </div> */}
 
     </div>
   );
