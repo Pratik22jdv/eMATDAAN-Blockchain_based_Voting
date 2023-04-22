@@ -1,10 +1,5 @@
-import { Link, useNavigate } from 'react-router-dom';
-
-
-function Home() {
-    const navigate = useNavigate();
+function User() {
     return (
-
         <div>
             <hr />
             <div className="Auth-form-container">
@@ -14,16 +9,15 @@ function Home() {
                         <h3 className="Auth-form-title">eMATDAAN DAPP</h3>
                     </div>
 
-                    <button class="menu-button" onClick={() => { navigate("/user") }}>USER</button>
-                    <button class="menu-button" onClick={() => { navigate("/admin") }}>ADMIN</button>
+                    <button class="menu-button">VERIFICATION STATUS</button>
+                    <button class="menu-button">VOTE</button>
 
                 </div>
 
             </div>
             <hr />
-        </div>
-
-    )
+        </div >
+    );
 }
 
-export default Home;
+export default User;
