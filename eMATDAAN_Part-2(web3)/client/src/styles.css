@@ -133,12 +133,12 @@ hr {
   background-color: var(--dark-gray);
 }
 
-#App .container .demo .contract-container .btns .input-btn input {
+/* #App .container .demo .contract-container .btns .input-btn input {
   width: 4rem;
   text-align: center;
   font-family: monospace;
   font-size: 1.2rem;
-}
+} */
 
 #App .container footer {
   padding-bottom: 7.5rem;

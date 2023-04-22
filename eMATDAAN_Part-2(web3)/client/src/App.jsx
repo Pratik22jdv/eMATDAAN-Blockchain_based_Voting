@@ -8,6 +8,8 @@ import NoticeNoArtifact from "./NoticeNoArtifact";
 import NoticeWrongNetwork from "./NoticeWrongNetwork";
 import Home from "./components/Home/Home";
 import Admin from "./components/Admin/Admin";
+import AddUser from "./components/Admin/AddUser";
+
 import useEth from "./contexts/EthContext/useEth";
 
 function App() {
@@ -29,6 +31,11 @@ function App() {
             !state.artifact ?
               <NoticeNoArtifact /> :
               !state.contract ? <Redirect to="/" /> : <Admin />} />
+
+          <Route path="/admin/addUser" element={
+            !state.artifact ?
+              <NoticeNoArtifact /> :
+              !state.contract ? <Redirect to="/" /> : <AddUser />} />
 
         </Routes>
 
