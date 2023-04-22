@@ -8,25 +8,22 @@ html {
   padding: 0;
 }
 
+body {
+  background-image: url(./blockchain-theme.jpg);
+  height: 100vh;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 #App {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.6rem;
-  --primary-color: #1266cc;
-  --secondary-color: #f96400;
-  --flash-color: rgb(89, 255, 0);
-  --gray: #999;
-  --light-gray: #e0e0e0;
-  --dark-gray: #777;
+  text-align: center;
 }
 
 #App .container {
-  width: 40%;
-  min-width: 60rem;
-  max-width: 75rem;
+  width: 80%;
+  /* min-width: 60rem;
+  max-width: 75rem; */
   height: 100%;
 }
 
@@ -119,7 +116,7 @@ hr {
   border-radius: 0 1rem 1rem 0;
 }
 
-#App .container .demo .contract-container .btns > * {
+#App .container .demo .contract-container .btns>* {
   width: 12rem;
   display: flex;
   align-items: center;
@@ -132,7 +129,7 @@ hr {
   cursor: pointer;
 }
 
-#App .container .demo .contract-container .btns > *:hover {
+#App .container .demo .contract-container .btns>*:hover {
   background-color: var(--dark-gray);
 }
 
@@ -151,3 +148,50 @@ hr {
   display: inline-block;
   margin: 2rem 1rem 0 0;
 }
+
+
+.Auth-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.Auth-form {
+  width: 40%;
+  box-shadow: rgb(0 0 0 / 16%) 1px 1px 10px;
+  padding-top: 30px;
+  padding-bottom: 20px;
+  border-radius: 8px;
+  background-color: white;
+
+}
+
+.Auth-form-content button{
+  width: 200px;
+}
+
+.menu-button{
+  background-color:#0062cc;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 8px 2px;
+  cursor: pointer;
+  width: 50%;
+  border-radius: 10px;
+}
+
+
+.Auth-form-title {
+  text-align: center;
+  margin-bottom: 1em;
+  color: rgb(34, 34, 34);
+  font-size: 40px;
+}
+
