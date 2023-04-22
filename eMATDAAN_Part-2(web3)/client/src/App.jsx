@@ -1,19 +1,39 @@
-import { EthProvider } from "./contexts/EthContext";
-import Intro from "./components/Intro/";
-import Setup from "./components/Setup";
-import Demo from "./components/Demo";
-import Footer from "./components/Footer";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route
+} from "react-router-dom";
+
+import NoticeNoArtifact from "./NoticeNoArtifact";
+import NoticeWrongNetwork from "./NoticeWrongNetwork";
 import Home from "./components/Home/Home";
+import Admin from "./components/Admin/Admin";
+import useEth from "./contexts/EthContext/useEth";
 
 function App() {
+
+  const { state } = useEth();
   return (
-    <EthProvider>
-      <div id="App">
-        <div className="container">
-          <Home />
-        </div>
-      </div>
-    </EthProvider>
+    <div id="App">
+      <Router>
+
+        <Routes>
+
+          <Route exact path="/" element={
+            !state.artifact ?
+              <NoticeNoArtifact /> :
+              !state.contract ?
+                <NoticeWrongNetwork /> : <Home />} />
+
+          <Route path="/admin" element={
+            !state.artifact ?
+              <NoticeNoArtifact /> :
+              !state.contract ? <Redirect to="/" /> : <Admin />} />
+
+        </Routes>
+
+      </Router>
+    </div>
   );
 }
 

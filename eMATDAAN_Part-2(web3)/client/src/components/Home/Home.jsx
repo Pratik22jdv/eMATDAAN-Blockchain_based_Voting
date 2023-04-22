@@ -1,5 +1,10 @@
+import { Link, useNavigate } from 'react-router-dom';
+
+
 function Home() {
+    const navigate = useNavigate();
     return (
+
         <div>
             <hr />
             <div className="Auth-form-container">
@@ -10,13 +15,14 @@ function Home() {
                     </div>
 
                     <button class="menu-button">USER</button>
-                    <button class="menu-button">ADMIN</button>
+                    <button class="menu-button" onClick={() => { navigate("/admin") }}>ADMIN</button>
 
                 </div>
 
             </div>
             <hr />
         </div>
+
     )
 }
 
