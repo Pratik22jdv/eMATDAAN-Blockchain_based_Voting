@@ -7,6 +7,7 @@ function AddUser() {
     const [isAdmin, setIsAdmin] = useState(false);
     const [Fetching, setFetching] = useState(false);
     const [inputValue, setInputValue] = useState("");
+    const [inputValue2, setInputValue2] = useState("");
 
     const handleInputChange = e => {
         if (/^\d+$|^$/.test(e.target.value)) {
@@ -14,15 +15,22 @@ function AddUser() {
         }
     };
 
+    const handleInputChange2 = e => {
+        setInputValue2(e.target.value);
+    };
+
     const handleSubmit = async e => {
         if (inputValue === "") {
             alert("Please enter a value to write.");
             return;
         }
-        const v = await contract.methods.verifyUser(inputValue).send({ from: accounts[0] });
-        if(v) setInputValue("");
+        const v = await contract.methods.verifyUser(inputValue, inputValue2).send({ from: accounts[0] });
+        if (v) {
+            setInputValue("");
+            setInputValue2("");
+        }
         console.log(v);
-        alert("Aadhar Added Successfully");
+        alert("User Added Successfully");
     };
 
     const checkAdmin = async () => {
@@ -32,7 +40,7 @@ function AddUser() {
     }
 
     useEffect(() => {
-        checkAdmin(setFetching, setIsAdmin);
+        checkAdmin();
         console.log(isAdmin);
     }, [Fetching]);
 
@@ -52,6 +60,13 @@ function AddUser() {
                             style={{ width: "60%", fontSize: "25px", padding: "5px", margin: "8px 0px" }}
                             value={inputValue}
                             onChange={handleInputChange} />
+
+                        <input
+                            type="text"
+                            placeholder="Enter Password"
+                            style={{ width: "60%", fontSize: "25px", padding: "5px", margin: "8px 0px" }}
+                            value={inputValue2}
+                            onChange={handleInputChange2} />
 
                         <button class="menu-button" onClick={handleSubmit}>ADD USER</button>
                     </>) : (<p style={{ fontSize: "30px" }}>⚠️ Only Admin can Access</p>)}
