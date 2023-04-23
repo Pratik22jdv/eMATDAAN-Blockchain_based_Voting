@@ -14,7 +14,7 @@ function User() {
                     </div>
 
                     <button class="menu-button" onClick={()=>{navigate("/user/verifyStatus")}}>VERIFICATION STATUS</button>
-                    <button class="menu-button">VOTE</button>
+                    <button class="menu-button" onClick={()=>{navigate("/user/vote")}}>VOTE</button>
                     <button class="menu-button" onClick={()=>{navigate(-1)}}>BACK</button>
 
                 </div>

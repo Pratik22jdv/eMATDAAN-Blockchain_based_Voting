@@ -33,7 +33,7 @@ function StartEndElection() {
         checkAdmin();
         checElectionStatus();
         console.log(electionActivated);
-    }, [Fetching, Fetching2]);
+    }, []);
 
     return (
         <div>

@@ -17,7 +17,7 @@ function Admin() {
     useEffect(() => {
         checkAdmin();
         console.log(isAdmin);
-    }, [Fetching]);
+    }, []);
 
     return (
         <div>
@@ -31,7 +31,7 @@ function Admin() {
                     {isAdmin ? (<>
                         <button class="menu-button" onClick={() => { navigate("/admin/addUser") }}>ADD USER</button>
                         <button class="menu-button" onClick={() => { navigate("/admin/startEndElection") }}>START/END ELECTION</button>
-                        <button class="menu-button">VOTE</button>
+                        <button class="menu-button" onClick={() => { navigate("/user/vote") }}>VOTE</button>
                         <button class="menu-button" onClick={() => { navigate(-1) }}>BACK</button></>) :
                         (<div>
                             <p style={{ fontSize: "30px" }}>⚠️ Only Admin can Access</p>

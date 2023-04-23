@@ -9,6 +9,7 @@ import NoticeWrongNetwork from "./NoticeWrongNetwork";
 import Home from "./components/Home/Home";
 import User from "./components/User/User";
 import VerificationStatus from "./components/User/VerificationStatus";
+import Vote from "./components/Vote/Vote";
 import Admin from "./components/Admin/Admin";
 import AddUser from "./components/Admin/AddUser";
 import StartEndElection from "./components/Admin/StartEndElection";
@@ -41,6 +42,12 @@ function App() {
               <NoticeNoArtifact /> :
               !state.contract ?
                 <NoticeWrongNetwork /> : <VerificationStatus />} />
+
+          <Route exact path="/user/vote" element={
+            !state.artifact ?
+              <NoticeNoArtifact /> :
+              !state.contract ?
+                <NoticeWrongNetwork /> : <Vote />} />
 
           <Route path="/admin" element={
             !state.artifact ?

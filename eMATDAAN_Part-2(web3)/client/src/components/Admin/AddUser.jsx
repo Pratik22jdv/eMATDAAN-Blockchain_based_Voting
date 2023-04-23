@@ -42,7 +42,7 @@ function AddUser() {
     useEffect(() => {
         checkAdmin();
         console.log(isAdmin);
-    }, [Fetching]);
+    }, []);
 
     return (
         <div>
