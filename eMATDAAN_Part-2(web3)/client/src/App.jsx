@@ -11,6 +11,7 @@ import User from "./components/User/User";
 import VerificationStatus from "./components/User/VerificationStatus";
 import Admin from "./components/Admin/Admin";
 import AddUser from "./components/Admin/AddUser";
+import StartEndElection from "./components/Admin/StartEndElection";
 
 import useEth from "./contexts/EthContext/useEth";
 
@@ -50,6 +51,11 @@ function App() {
             !state.artifact ?
               <NoticeNoArtifact /> :
               !state.contract ? <Redirect to="/" /> : <AddUser />} />
+
+          <Route path="/admin/startEndElection" element={
+            !state.artifact ?
+              <NoticeNoArtifact /> :
+              !state.contract ? <Redirect to="/" /> : <StartEndElection />} />
 
         </Routes>
 
