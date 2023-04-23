@@ -11,19 +11,27 @@ contract Election {
         uint256 voteCount;
     }
 
+
+    //Store verified aadhar by admin
+    mapping(string => bool) private verifiedAadhar;
+
+    //Auth user
+    mapping(string => string) private aadharPassword;
+
     // Store accounts that have voted
-    mapping(address => bool) public voters;
+    mapping(address => bool) public votersAcc;
+    mapping(string => bool) private votersAadhar;
+
+
     // Store Candidates
     // Fetch Candidate
     mapping(uint256 => Candidate) public candidates;
     // Store Candidates Count
     uint256 public candidatesCount;
-    //end time of election
-    uint256 public end;
-    //store aadhar of accounts that have voted
-    mapping(string => bool) private voted;
-    mapping(string => bool) private verified;
-    // voted event
+
+    //Election process activated or not
+    bool public activeElection;
+
     // event votedEvent(uint256 indexed _candidateId);
     //addres of the user who has deployed the contract
     address public owner;
@@ -33,16 +41,25 @@ contract Election {
         _;
     }
 
-    function endTimeFunc(uint endTime) public restricted{
-        end = endTime;
+    function startEndElection() public restricted{
+        if(activeElection==true) activeElection=false;
+        else activeElection = true;
     }
 
-    function verifyUser(string memory _aadhar) public restricted{
-        verified[_aadhar]=true;
+    function verifyUser(string memory _aadhar, string memory _pass) public restricted{
+        verifiedAadhar[_aadhar]=true;
+        aadharPassword[_aadhar] = _pass;
+    }
+
+    function authUser(string memory _aadhar, string memory _pass) public view returns (bool)
+    {
+        require(verifiedAadhar[_aadhar]);
+        return ( keccak256(abi.encodePacked(aadharPassword[_aadhar])) == keccak256(abi.encodePacked(_pass)) );
     }
 
     constructor() {
          owner = msg.sender;
+         activeElection =false;
         addCandidate("J.P Nada", "Bharatiya Janata Party");
         addCandidate("Rahul Gandhi", "Indian National Congress");
         addCandidate("Saman Pathak", "Communist Party Of India (Marxist)");
@@ -65,39 +82,41 @@ contract Election {
         );
     }
 
-    function vote(uint256 _candidateId) public {
+    function vote(string memory _aadhar, string memory _pass, uint256 _candidateId) public {
         // require that they haven't voted before
-        require(!voters[msg.sender]);
-        // require(!voted[aadhar]);
-        // require(currentTime <= end);
+        // require(!voters[msg.sender]);
+        require(activeElection);
+        require(verifiedAadhar[_aadhar]);
+        require( keccak256(abi.encodePacked(aadharPassword[_aadhar])) == keccak256(abi.encodePacked(_pass)) );
+        require(!votersAadhar[_aadhar]);
 
         // require a valid candidate
         require(_candidateId > 0 && _candidateId <= candidatesCount);
 
-        // record that voter has voted
-        voters[msg.sender] = true;
-        // voted[aadhar] = true;
-
         // update candidate vote Count
         candidates[_candidateId].voteCount++;
+
+        // record that voter has voted
+        votersAcc[msg.sender] = true;
+        votersAadhar[_aadhar] = true;
 
         // trigger voted event
         // emit votedEvent(_candidateId);
     }
 
     function hasVoted(string memory _aadhar) public view returns (bool) {
-        return voted[_aadhar];
+        return votersAadhar[_aadhar];
     }
 
     function isVerified(string memory _aadhar) public view returns (bool){
-        return verified[_aadhar];
+        return verifiedAadhar[_aadhar];
     }
 
     function isAdmin() public view returns (bool) {
         return msg.sender == owner;
     }
 
-    function hasElectionEnded(uint currentTime) public view returns (bool) {
-        return end < currentTime;
+    function activatedElection() public view returns (bool) {
+        return activeElection;
     }
 }
