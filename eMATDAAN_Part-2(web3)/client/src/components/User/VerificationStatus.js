@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useEth } from '../../contexts/EthContext';
 
 
 function VerificationStatus() {
+    const { state: { contract, accounts } } = useEth();
     const navigate = useNavigate();
     const [inputValue, setInputValue] = useState("");
 
