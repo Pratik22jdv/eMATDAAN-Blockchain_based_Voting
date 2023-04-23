@@ -1,4 +1,8 @@
+import { useNavigate } from 'react-router-dom';
+
 function User() {
+    const navigate = useNavigate();
+    
     return (
         <div>
             <hr />
@@ -9,8 +13,9 @@ function User() {
                         <h3 className="Auth-form-title">eMATDAAN DAPP</h3>
                     </div>
 
-                    <button class="menu-button">VERIFICATION STATUS</button>
+                    <button class="menu-button" onClick={()=>{navigate("/user/verifyStatus")}}>VERIFICATION STATUS</button>
                     <button class="menu-button">VOTE</button>
+                    <button class="menu-button" onClick={()=>{navigate(-1)}}>BACK</button>
 
                 </div>
 

@@ -8,6 +8,7 @@ import NoticeNoArtifact from "./NoticeNoArtifact";
 import NoticeWrongNetwork from "./NoticeWrongNetwork";
 import Home from "./components/Home/Home";
 import User from "./components/User/User";
+import VerificationStatus from "./components/User/VerificationStatus";
 import Admin from "./components/Admin/Admin";
 import AddUser from "./components/Admin/AddUser";
 
@@ -33,6 +34,12 @@ function App() {
               <NoticeNoArtifact /> :
               !state.contract ?
                 <NoticeWrongNetwork /> : <User />} />
+
+          <Route exact path="/user/verifyStatus" element={
+            !state.artifact ?
+              <NoticeNoArtifact /> :
+              !state.contract ?
+                <NoticeWrongNetwork /> : <VerificationStatus />} />
 
           <Route path="/admin" element={
             !state.artifact ?
