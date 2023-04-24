@@ -26,9 +26,6 @@ const User = new Schema(
     userGender: {
       type: String,
     },
-    userDob: {
-      type: Date,
-    },
     userPinCode: {
       type: String,
     },
@@ -45,15 +42,6 @@ const User = new Schema(
       type: String,
     },
     userDistrict: {
-      type: String,
-    },
-    username: {
-      type: String,
-    },
-    salt: {
-      type: String,
-    },
-    hash: {
       type: String,
     },
     admin: {

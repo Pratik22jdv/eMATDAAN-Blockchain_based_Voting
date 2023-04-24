@@ -8,6 +8,7 @@ import {
   StepLabel
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import CircularProgress from "@mui/material/CircularProgress";
 import {
   useForm,
   Controller,
@@ -66,39 +67,6 @@ const BasicForm = () => {
             label="Phone Number"
             variant="outlined"
             placeholder="Enter Your Phone Number"
-            fullWidth
-            margin="normal"
-            {...field}
-          />
-        )}
-      />
-
-      <Controller
-        control={control}
-        name="userName"
-        render={({ field }) => (
-          <TextField
-            id="user-name"
-            label="Username"
-            variant="outlined"
-            placeholder="Enter username"
-            fullWidth
-            margin="normal"
-            {...field}
-          />
-        )}
-      />
-
-      <Controller
-        control={control}
-        name="password"
-        render={({ field }) => (
-          <TextField
-            type="password"
-            id="pass-word"
-            label="Password"
-            variant="outlined"
-            placeholder="Enter Password"
             fullWidth
             margin="normal"
             {...field}
@@ -171,23 +139,6 @@ const ContactForm = () => {
             label="Gender"
             variant="outlined"
             placeholder="Gender"
-            style={{ width: "40%" }, { marginLeft: "30px" }}
-            margin="normal"
-            {...field}
-          />
-        )}
-      />
-
-      <Controller
-        control={control}
-        name="userDOB"
-        render={({ field }) => (
-          <TextField
-            type="Date"
-            id="dob"
-            label="DOB"
-            variant="outlined"
-            placeholder="Date of Birth"
             style={{ width: "40%" }, { marginLeft: "30px" }}
             margin="normal"
             {...field}
@@ -379,29 +330,30 @@ const LinaerStepper = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [skippedSteps, setSkippedSteps] = useState([]);
   const steps = getSteps();
+  const [userMongoId, setUserMongoId] = useState("");
 
-  
 
-  const handleClick =  (data) => {
-    axios.post("http://localhost:3000/users/register", {}, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      },
-      params: data
-    }).then(function (response) {
-      console.log(response.data)
-    }).catch(function (error) {
-      console.log(error)
-    })
+
+  const handleClick = async (data) => {
+    try {
+      const res = await axios.post("http://localhost:3000/users/register", data);
+      console.log(res);
+      if (res.data._id) {
+        setUserMongoId(res.data._id);
+        console.log(res.data._id);
+      }
+
+    } catch (err) {
+      console.log(err);
+    }
   };
 
 
   const handleNext = (data) => {
     if (activeStep == steps.length - 1) {
-      
+
       handleClick(data);
-     
+
       setActiveStep(activeStep + 1);
 
     } else {
@@ -460,9 +412,15 @@ const LinaerStepper = () => {
       </Stepper>
 
       {activeStep === steps.length ? (
-        <Typography variant="h3" align="center">
-          Thank You
-        </Typography>
+        <div style={{height:"200px"}}>{userMongoId == null ? (<><Typography variant="h3" align="center" style={{margin:"20px"}}><CircularProgress /></Typography></>) :
+          (<>
+            <Typography variant="h3" align="center" style={{margin:"20px"}}>
+              Thank You
+            </Typography>
+            <Typography variant="h5" align="center" style={{color:"green"}}>
+              Copy Id to track application: <br />{userMongoId}
+            </Typography>
+          </>)}</div>
       ) : (
         <>
           <FormProvider {...methods}>

@@ -8,23 +8,22 @@ const User = require('../models/user');
 //user registartion
 router.post('/register', async (req, res) => {
     try {
-        console.log("reqbody " + req.query.email);
+
 
         const newUser = new User({
-            firstName: req.query.firstName,
-            lastName: req.query.lastName,
-            phoneNumber: req.query.phoneNumber,
-            aadharNumber: req.query.aadharNumber,
-            userAge: req.query.userAge,
-            userGender: req.query.userGender,
-            userPinCode: req.query.userPinCode,
-            address1: req.query.address1,
-            epicNumber: req.query.epicNumber,
-            address2: req.query.address2,
-            userState: req.query.userState,
-            userDistrict: req.query.userDistrict,
-            username: req.query.userName,
-            email: req.query.email
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            phoneNumber: req.body.phoneNumber,
+            aadharNumber: req.body.aadharNumber,
+            userAge: req.body.userAge,
+            userGender: req.body.userGender,
+            userPinCode: req.body.userPinCode,
+            address1: req.body.address1,
+            epicNumber: req.body.epicNumber,
+            address2: req.body.address2,
+            userState: req.body.userState,
+            userDistrict: req.body.userDistrict,
+            email: req.body.email
         });
 
         console.log(newUser);
