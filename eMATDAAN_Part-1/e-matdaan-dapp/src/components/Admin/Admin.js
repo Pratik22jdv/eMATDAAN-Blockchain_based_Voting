@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-// import axios from 'axios';
+import axios from 'axios';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -13,7 +13,7 @@ import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 
 function Admin({ user }) {
     const [userList, setUserList] = useState([]);
-    const [x, setX] = useState(false);
+    const [isFetching, setFetching] = useState(false);
 
     const apiFetchList = () => {
         return fetch(
@@ -31,7 +31,6 @@ function Admin({ user }) {
     const fetchUserList = () => {
         apiFetchList().then((data) => {
             setUserList(data);
-            setX(true);
         })
     };
 
@@ -47,23 +46,23 @@ function Admin({ user }) {
 
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
         [`&.${tableCellClasses.head}`]: {
-          backgroundColor: theme.palette.common.black,
-          color: theme.palette.common.white,
+            backgroundColor: theme.palette.common.black,
+            color: theme.palette.common.white,
         },
         [`&.${tableCellClasses.body}`]: {
-          fontSize: 14,
+            fontSize: 14,
         },
-      }));
-      
-      const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    }));
+
+    const StyledTableRow = styled(TableRow)(({ theme }) => ({
         '&:nth-of-type(odd)': {
-          backgroundColor: theme.palette.action.hover,
+            backgroundColor: theme.palette.action.hover,
         },
         // hide last border
         '&:last-child td, &:last-child th': {
-          border: 0,
+            border: 0,
         },
-      }));
+    }));
 
     // const rows = [
     //     createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
@@ -73,23 +72,52 @@ function Admin({ user }) {
     //     createData('Gingerbread', 356, 16.0, 49, 3.9),
     // ];
 
+    const setUserApproved = async(userObj) =>{
+        console.log(userObj);
+        setFetching({...isFetching, user: userObj._id});
+        const res = await axios.put("http://localhost:3000/users/approvalChange/"+ userObj._id);
+        let editedUser = userList.filter((user) => {
+            return user._id === userObj._id;
+        });
+
+        let editedUserIndex;
+
+        for (
+            editedUserIndex = 0;
+            editedUserIndex < userList.length;
+            editedUserIndex++
+          ) {
+            if (userList[editedUserIndex]?._id == userObj._id) {
+              break;
+            }
+          }
+          console.log(editedUserIndex);
+          let newUserList = [
+            ...userList.slice(0, editedUserIndex),
+            { ...editedUser[0], approved: true},
+            ...userList.slice(editedUserIndex + 1, userList.length),
+          ];
+          setFetching({ ...isFetching, user: "" });
+          setUserList(newUserList);
+          alert("updated");
+
+    }
+
 
     useEffect(() => {
         fetchUserList(user);
-        console.log(userList)
-    }, [x]);
+    }, []);
 
     return (
-        <div style={{ marginTop: "50px" }}>
+        <div style={{ margin: "20px", marginTop: "10px" }}>
             {userList.length > 0 ? (<TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
                             <TableCell>Email</TableCell>
-                            <TableCell align="right">First&nbsp;Name</TableCell>
-                            <TableCell align="right">Last&nbsp;Name</TableCell>
-                            <TableCell align="right">Aadhar&nbsp;Number</TableCell>
-                            <TableCell align="right">Approved&nbsp;</TableCell>
+                            <TableCell >User&nbsp;Name</TableCell>
+                            <TableCell >Aadhar&nbsp;Number</TableCell>
+                            <TableCell >Approved&nbsp;</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -101,10 +129,13 @@ function Admin({ user }) {
                                 <StyledTableCell component="th" scope="row">
                                     {userObj.email}
                                 </StyledTableCell>
-                                <StyledTableCell align="right">{userObj.firstName}</StyledTableCell>
-                                <StyledTableCell align="right">{userObj.lastName}</StyledTableCell>
-                                <StyledTableCell align="right">{userObj.aadharNumber}</StyledTableCell>
-                                <StyledTableCell align="right">{userObj.approved}</StyledTableCell>
+                                <StyledTableCell >{userObj.firstName + " " + userObj.lastName}</StyledTableCell>
+                                <StyledTableCell >{userObj.aadharNumber}</StyledTableCell>
+                                <StyledTableCell >
+                                    <button onClick={() => setUserApproved(userObj)}>
+                                        {userObj.approved? "Unapprove": "Approve"}
+                                    </button>
+                                </StyledTableCell>
                             </TableRow>
                         ))}
                     </TableBody>

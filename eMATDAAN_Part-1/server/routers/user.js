@@ -43,7 +43,7 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res, next) => {
     try {
         // console.log(req.session);
-        console.log("email" + req.query.email);
+        
         const user = await User.findOne({ email: req.query.email });
 
         if (!user) res.json({ auth: false, message: "user not found" });
@@ -54,8 +54,6 @@ router.post('/login', async (req, res, next) => {
             if (!validPassword) res.json({ auth: false, message: "wrong password" });
 
             else {
-
-                console.log(user.email);
 
                 const token = jwt.sign({
                     email: user.email,
@@ -130,5 +128,28 @@ router.get('/all', authAdmin, async (req, res) => {
     } catch (err) {
         res.status(500).json(err);
     }
+});
+
+//User route
+router.get("/:userId", async(req, res)=> {
+    const userId = req.params.userId;
+    try{
+        const user = await User.findById(userId);
+        res.status(200).json(user);
+    }catch(err){
+        res.status(500).json(err);
+    }
+});
+
+router.put("/approvalChange/:userId", async(req, res) =>{
+    const userId = req.params.userId;
+    try{
+        const user = await User.updateOne({_id: userId}, {$set: {approved:true}});
+        console.log(user);
+        res.status(200).json(user);
+    }catch(err){
+        res.status(500).json(err);
+    }
+
 })
 module.exports = router;
