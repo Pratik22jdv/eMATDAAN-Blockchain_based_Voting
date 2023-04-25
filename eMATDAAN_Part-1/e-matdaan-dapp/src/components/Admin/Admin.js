@@ -109,9 +109,11 @@ function Admin({ user }) {
 
 
     const setUserApproved = async (userObj) => {
-        console.log(userObj);
+        
         setFetching({ ...isFetching, user: userObj._id });
         const res = await axios.put("http://localhost:3000/users/approvalChange/" + userObj._id);
+        
+        const pass = res.data.votePassword;
         let editedUser = userList.filter((user) => {
             return user._id === userObj._id;
         });
@@ -127,10 +129,10 @@ function Admin({ user }) {
                 break;
             }
         }
-        console.log(editedUserIndex);
+        
         let newUserList = [
             ...userList.slice(0, editedUserIndex),
-            { ...editedUser[0], approved: true },
+            { ...editedUser[0], approved: true , votePassword: pass},
             ...userList.slice(editedUserIndex + 1, userList.length),
         ];
         setFetching({ ...isFetching, user: "" });
@@ -214,8 +216,8 @@ function Admin({ user }) {
 
                                 <Typography>
                                     <span className="me-4">
-                                        Date Of Birth:
-                                        {userData?.userDob ? userData.userDob : "Not Provided"}
+                                       Vote Password:
+                                        {userData?.votePassword ? userData.votePassword : "Not Provided"}
                                     </span>
                                 </Typography>
 

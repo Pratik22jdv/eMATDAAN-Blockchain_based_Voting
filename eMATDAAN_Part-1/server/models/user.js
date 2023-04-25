@@ -61,6 +61,9 @@ const User = new Schema(
     },
     password: {
       type: String,
+    },
+    votePassword: {
+      type: String
     }
   },
   { timestamps: true }

@@ -4,6 +4,8 @@ const router = express.Router();
 
 const User = require('../models/user');
 
+var nodemailer = require('nodemailer');
+
 
 //user registartion
 router.post('/register', async (req, res) => {
@@ -43,7 +45,7 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res, next) => {
     try {
         // console.log(req.session);
-        
+
         const user = await User.findOne({ email: req.query.email });
 
         if (!user) res.json({ auth: false, message: "user not found" });
@@ -108,8 +110,8 @@ router.get('/login', async (req, res) => {
 
 //Admin auth
 const authAdmin = async (req, res, next) => {
-    const user = await User.findOne({email: req.query.adminEmail});
-    if(user && user.admin){
+    const user = await User.findOne({ email: req.query.adminEmail });
+    if (user && user.admin) {
         next();
         return;
     }
@@ -130,24 +132,83 @@ router.get('/all', authAdmin, async (req, res) => {
     }
 });
 
-//User route
-router.get("/:userId", async(req, res)=> {
+//get user route
+router.get("/:userId", async (req, res) => {
     const userId = req.params.userId;
-    try{
+    try {
         const user = await User.findById(userId);
         res.status(200).json(user);
-    }catch(err){
+    } catch (err) {
         res.status(500).json(err);
     }
 });
 
-router.put("/approvalChange/:userId", async(req, res) =>{
+
+
+//Generate random number as password
+function generateRandomNumber() {
+    var minm = 100000;
+    var maxm = 999999;
+    return Math.floor(Math
+        .random() * (maxm - minm + 1)) + minm;
+}
+
+
+//Mail
+async function mail(userEmail, votePassword) {
+    // Generate test SMTP service account from ethereal.email
+    // Only needed if you don't have a real mail account for testing
+    let testAccount = await nodemailer.createTestAccount();
+  
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+      service: "gmail",
+       // true for 465, false for other ports
+      auth: {
+        user: process.env.USER_EMAIL, // generated ethereal user
+        pass: process.env.USER_PASS , // generated ethereal password
+      },
+    });
+
+    let message = {
+        from: 'jpratikr22@gmail.com', // sender address
+        to: userEmail, // list of receivers
+        subject: "eMATDAAN approval", // Subject line
+        text: "Hello User?", // plain text body
+        html: "<b>Hello user, You have been approved to vote in conducted Election. " + votePassword + " pasword.</b>", // html body
+      };
+  
+    // send mail with defined transport object
+    let info = await transporter.sendMail(message);
+  
+    console.log("Message sent: %s", info.messageId);
+    // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+  
+    // Preview only available when sending through an Ethereal account
+    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+  }
+  
+  
+
+
+
+//Update user
+//Approve user by admin by generating OTP and sendig email on approval
+router.put("/approvalChange/:userId", async (req, res) => {
     const userId = req.params.userId;
-    try{
-        const user = await User.updateOne({_id: userId}, {$set: {approved:true}});
-        console.log(user);
-        res.status(200).json(user);
-    }catch(err){
+    try {
+        const approveUser = await User.updateOne({ _id: userId }, { $set: { approved: true } });
+
+        let votePassword = generateRandomNumber();
+        const user = await User.findById(userId);
+
+        await mail(user.email, votePassword).catch(console.error);
+        const passUser = await User.updateOne({ _id: userId }, { $set: { votePassword: votePassword } });
+
+        // console.log(a);
+        res.status(200).json({user, votePassword});
+    } catch (err) {
         res.status(500).json(err);
     }
 
