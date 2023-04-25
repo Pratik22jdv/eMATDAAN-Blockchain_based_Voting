@@ -10,10 +10,17 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import { CircularProgress } from "@mui/material";
+import toast, { Toaster } from "react-hot-toast";
+import { Button, Typography } from "@mui/material";
+
+
 
 function Admin({ user }) {
     const [userList, setUserList] = useState([]);
-    const [isFetching, setFetching] = useState(false);
+    const [isFetching, setFetching] = useState({});
+
+    // const notifySuccess = (message) => toast.success(message);
 
     const apiFetchList = () => {
         return fetch(
@@ -72,10 +79,10 @@ function Admin({ user }) {
     //     createData('Gingerbread', 356, 16.0, 49, 3.9),
     // ];
 
-    const setUserApproved = async(userObj) =>{
+    const setUserApproved = async (userObj) => {
         console.log(userObj);
-        setFetching({...isFetching, user: userObj._id});
-        const res = await axios.put("http://localhost:3000/users/approvalChange/"+ userObj._id);
+        setFetching({ ...isFetching, user: userObj._id });
+        const res = await axios.put("http://localhost:3000/users/approvalChange/" + userObj._id);
         let editedUser = userList.filter((user) => {
             return user._id === userObj._id;
         });
@@ -86,20 +93,20 @@ function Admin({ user }) {
             editedUserIndex = 0;
             editedUserIndex < userList.length;
             editedUserIndex++
-          ) {
-            if (userList[editedUserIndex]?._id == userObj._id) {
-              break;
+        ) {
+            if (userList[editedUserIndex]?._id === userObj._id) {
+                break;
             }
-          }
-          console.log(editedUserIndex);
-          let newUserList = [
+        }
+        console.log(editedUserIndex);
+        let newUserList = [
             ...userList.slice(0, editedUserIndex),
-            { ...editedUser[0], approved: true},
+            { ...editedUser[0], approved: true },
             ...userList.slice(editedUserIndex + 1, userList.length),
-          ];
-          setFetching({ ...isFetching, user: "" });
-          setUserList(newUserList);
-          alert("updated");
+        ];
+        setFetching({ ...isFetching, user: "" });
+        setUserList(newUserList);
+        toast.success(userObj._id + " has been approved");
 
     }
 
@@ -132,16 +139,32 @@ function Admin({ user }) {
                                 <StyledTableCell >{userObj.firstName + " " + userObj.lastName}</StyledTableCell>
                                 <StyledTableCell >{userObj.aadharNumber}</StyledTableCell>
                                 <StyledTableCell >
-                                    <button onClick={() => setUserApproved(userObj)}>
-                                        {userObj.approved? "Unapprove": "Approve"}
-                                    </button>
+                                    {isFetching.user == userObj._id ?
+                                        (<CircularProgress />) :
+                                        (<>
+                                            {
+                                                userObj.approved ?
+                                                    (<Button variant="contained" disabled onClick={() => setUserApproved(userObj)}>
+                                                        Approved
+                                                    </Button>) :
+                                                    (<Button variant="contained" disabled onClick={() => setUserApproved(userObj)}>
+                                                        Approve
+                                                    </Button>)
+                                            }
+                                        </>
+                                        )
+                                    }
                                 </StyledTableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>) :
-                (<h1 style={{ color: "white" }}>Admin Portal</h1>)}
+                (<div style={{ width: "80px", margin: "auto", marginTop: "20%", backgroundColor: "white", padding: "20px", borderRadius: "20px" }}>
+                    <CircularProgress />
+                </div>)
+            }
+            <Toaster />
         </div>
     );
 }
