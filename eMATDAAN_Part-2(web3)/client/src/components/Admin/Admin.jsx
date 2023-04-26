@@ -31,6 +31,7 @@ function Admin() {
                     {isAdmin ? (<>
                         <button class="menu-button" onClick={() => { navigate("/admin/addUser") }}>ADD USER</button>
                         <button class="menu-button" onClick={() => { navigate("/admin/startEndElection") }}>START/END ELECTION</button>
+                        <button class="menu-button" onClick={() => { navigate("/admin/result") }}>Declare Result</button>
                         <button class="menu-button" onClick={() => { navigate("/user/vote") }}>VOTE</button>
                         <button class="menu-button" onClick={() => { navigate(-1) }}>BACK</button></>) :
                         (<div>

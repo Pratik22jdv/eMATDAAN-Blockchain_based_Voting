@@ -81,8 +81,8 @@ function Vote() {
     const submitVote = async () => {
         setIsFetching(true);
         const v = await contract.methods.vote(inputValue, inputValue2, Number(candidateId)).send({ from: accounts[0] });
+        setHasVoted(true);
         setIsFetching(false);
-        hasVoted(true);
     }
 
     return (

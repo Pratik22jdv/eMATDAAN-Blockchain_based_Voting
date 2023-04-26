@@ -31,6 +31,7 @@ contract Election {
 
     //Election process activated or not
     bool public activeElection;
+    bool public declareResult;
 
     // event votedEvent(uint256 indexed _candidateId);
     //addres of the user who has deployed the contract
@@ -44,6 +45,11 @@ contract Election {
     function startEndElection() public restricted{
         if(activeElection==true) activeElection=false;
         else activeElection = true;
+    }
+
+    function declareResultFun() public restricted{
+        if(declareResult==true) declareResult=false;
+        else declareResult = true;
     }
 
     function verifyUser(string memory _aadhar, string memory _pass) public restricted{
@@ -60,6 +66,7 @@ contract Election {
     constructor() {
          owner = msg.sender;
          activeElection =false;
+         declareResult =false;
         addCandidate("J.P Nada", "Bharatiya Janata Party");
         addCandidate("Rahul Gandhi", "Indian National Congress");
         addCandidate("Saman Pathak", "Communist Party Of India (Marxist)");
