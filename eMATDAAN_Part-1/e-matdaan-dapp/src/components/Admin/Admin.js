@@ -118,7 +118,7 @@ function Admin({ user }) {
         setFetching({ ...isFetching, user: userObj._id });
         const res = await axios.put("http://localhost:3000/users/approvalChange/" + userObj._id);
         
-        const pass = bcrypt.hashSync(res.data.votePassword, '$2a$10$CwTycUXWue0Thq9StjUM0u');
+        const pass = res.data.votePassword;
         let editedUser = userList.filter((user) => {
             return user._id === userObj._id;
         });
