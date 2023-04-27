@@ -1,5 +1,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const bcrypt = require("bcrypt");
+
 const router = express.Router();
 
 const User = require('../models/user');
@@ -158,16 +160,17 @@ function generateRandomNumber() {
 async function mail(userEmail, votePassword) {
     // Generate test SMTP service account from ethereal.email
     // Only needed if you don't have a real mail account for testing
-    let testAccount = await nodemailer.createTestAccount();
-  
+    // let testAccount = await nodemailer.createTestAccount();
+    // console.log(userEmail);
+
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
-      service: "gmail",
-       // true for 465, false for other ports
-      auth: {
-        user: process.env.USER_EMAIL, // generated ethereal user
-        pass: process.env.USER_PASS , // generated ethereal password
-      },
+        service: "gmail",
+        // true for 465, false for other ports
+        auth: {
+            user: process.env.USER_EMAIL, // generated ethereal user
+            pass: process.env.USER_PASS, // generated ethereal password
+        },
     });
 
     let message = {
@@ -176,20 +179,20 @@ async function mail(userEmail, votePassword) {
         subject: "eMATDAAN approval", // Subject line
         text: "Hello User?", // plain text body
         html: "<b>Hello user, You have been approved to vote in conducted Election. " + votePassword + " pasword.</b>", // html body
-      };
-  
+    };
+
     // send mail with defined transport object
     let info = await transporter.sendMail(message);
-  
+
     console.log("Message sent: %s", info.messageId);
     // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-  
+
     // Preview only available when sending through an Ethereal account
     console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
     // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-  }
-  
-  
+}
+
+
 
 
 
@@ -198,16 +201,18 @@ async function mail(userEmail, votePassword) {
 router.put("/approvalChange/:userId", async (req, res) => {
     const userId = req.params.userId;
     try {
-        const approveUser = await User.updateOne({ _id: userId }, { $set: { approved: true } });
-
-        let votePassword = generateRandomNumber();
+        
         const user = await User.findById(userId);
+        let votePassword = generateRandomNumber();
+        console.log(votePassword);
 
         await mail(user.email, votePassword).catch(console.error);
         const passUser = await User.updateOne({ _id: userId }, { $set: { votePassword: votePassword } });
 
+        const approveUser = await User.updateOne({ _id: userId }, { $set: { approved: true } });
+
         // console.log(a);
-        res.status(200).json({user, votePassword});
+        res.status(200).json({ user, votePassword });
     } catch (err) {
         res.status(500).json(err);
     }

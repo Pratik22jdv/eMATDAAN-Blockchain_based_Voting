@@ -3,9 +3,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEth } from '../../contexts/EthContext';
 import CircularProgress from "@mui/material/CircularProgress";
+import bcrypt from 'bcryptjs';
 import { TableHeader, CustomizedTables } from './Table';
 
 function Vote() {
+    // const salt = bcrypt.genSaltSync(10);
+    
     const navigate = useNavigate();
     const { state: { contract, accounts } } = useEth();
     const [inputValue, setInputValue] = useState("");
@@ -39,6 +42,9 @@ function Vote() {
     // }
 
     const handleSubmit = async () => {
+        
+        const hashedPassword = await bcrypt.hashSync(inputValue2, '$2a$10$CwTycUXWue0Thq9StjUM0u');
+        // setInputValue2(hashedPassword);
         const value = await contract.methods.isVerified(inputValue).call({ from: accounts[0] });
         if (!value) {
             alert("Not verified!! Please check aadhar number")
@@ -46,7 +52,7 @@ function Vote() {
         }
         else setVerified(true);
 
-        const value2 = await contract.methods.authUser(inputValue, inputValue2).call({ from: accounts[0] });
+        const value2 = await contract.methods.authUser(inputValue, hashedPassword).call({ from: accounts[0] });
         if (!value2) {
             alert("Authentication failed!! Please check Credentials");
             return;
@@ -80,7 +86,8 @@ function Vote() {
 
     const submitVote = async () => {
         setIsFetching(true);
-        const v = await contract.methods.vote(inputValue, inputValue2, Number(candidateId)).send({ from: accounts[0] });
+        const hashedPassword = await bcrypt.hashSync(inputValue2, '$2a$10$CwTycUXWue0Thq9StjUM0u');
+        const v = await contract.methods.vote(inputValue, hashedPassword, Number(candidateId)).send({ from: accounts[0] });
         setHasVoted(true);
         setIsFetching(false);
     }

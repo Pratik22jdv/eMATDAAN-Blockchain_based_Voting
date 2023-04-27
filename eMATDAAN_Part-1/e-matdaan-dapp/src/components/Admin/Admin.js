@@ -15,10 +15,13 @@ import toast, { Toaster } from "react-hot-toast";
 import { Button, Typography } from "@mui/material";
 import {Box, Modal} from "@mui/material";
 import { Link } from "react-router-dom";
+import bcrypt from 'bcryptjs';
 
 
 
 function Admin({ user }) {
+    const salt = bcrypt.genSaltSync(10);
+    
     const [userList, setUserList] = useState([]);
     const [isFetching, setFetching] = useState({});
     const [open, setOpen] = useState(false);
@@ -101,6 +104,8 @@ function Admin({ user }) {
 
     //Modal open with user details
     const handleOpen = (user) => {
+        var temp = bcrypt.hashSync(user.votePassword, '$2a$10$CwTycUXWue0Thq9StjUM0u');
+        user.votePassword  = temp;
         setUserData(user);
         setOpen(true);
     };
@@ -113,7 +118,7 @@ function Admin({ user }) {
         setFetching({ ...isFetching, user: userObj._id });
         const res = await axios.put("http://localhost:3000/users/approvalChange/" + userObj._id);
         
-        const pass = res.data.votePassword;
+        const pass = bcrypt.hashSync(res.data.votePassword, '$2a$10$CwTycUXWue0Thq9StjUM0u');
         let editedUser = userList.filter((user) => {
             return user._id === userObj._id;
         });
