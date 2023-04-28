@@ -104,8 +104,8 @@ function Admin({ user }) {
 
     //Modal open with user details
     const handleOpen = (user) => {
-        var temp = bcrypt.hashSync(user.votePassword, '$2a$10$CwTycUXWue0Thq9StjUM0u');
-        user.votePassword  = temp;
+        if(user.votePassword)var temp = bcrypt.hashSync(user.votePassword, '$2a$10$CwTycUXWue0Thq9StjUM0u');
+        if(user.votePassword)user.votePassword  = temp;
         setUserData(user);
         setOpen(true);
     };
@@ -137,7 +137,7 @@ function Admin({ user }) {
         
         let newUserList = [
             ...userList.slice(0, editedUserIndex),
-            { ...editedUser[0], approved: true , votePassword: pass},
+            { ...editedUser[0], approved: true , votePassword: pass.toString()},
             ...userList.slice(editedUserIndex + 1, userList.length),
         ];
         setFetching({ ...isFetching, user: "" });

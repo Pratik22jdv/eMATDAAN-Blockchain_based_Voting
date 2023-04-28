@@ -87,6 +87,7 @@ function Vote() {
     const submitVote = async () => {
         setIsFetching(true);
         const hashedPassword = await bcrypt.hashSync(inputValue2, '$2a$10$CwTycUXWue0Thq9StjUM0u');
+        console.log(hashedPassword);
         const v = await contract.methods.vote(inputValue, hashedPassword, Number(candidateId)).send({ from: accounts[0] });
         setHasVoted(true);
         setIsFetching(false);
