@@ -12,7 +12,9 @@ import {
 }
 
   from 'mdb-react-ui-kit';
-  import {useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { CircularProgress } from "@mui/material";
+import toast, { Toaster } from "react-hot-toast";
 import axios from 'axios';
 
 function Login() {
@@ -20,7 +22,8 @@ function Login() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const navigate = useNavigate();
-  
+  const [Fetching, setFetching] = useState(false);
+
   // const email = "";
 
   // const fun = ()=>{
@@ -29,33 +32,35 @@ function Login() {
   // }
 
 
-  const loginCall = () => {
+  const loginCall = async() => {
+    setFetching(true);
+
     const data = {
       email: emailRef.current.value,
       password: passwordRef.current.value
     }
 
-    axios.post("http://localhost:3000/users/login", {}, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      },
-      params: data
-    }).then(function (response) {
-      if(response.data.auth)
-      {  
-        console.log(response.data.user);
-        localStorage.setItem("user", JSON.stringify(response.data.user))
+    try {
+      
+      const res = await axios.post("http://localhost:3000/users/login", data);
+
+      if (res.data.auth) {
+        console.log(res.data.user);
+        toast.success("Login Success");
+        localStorage.setItem("user", JSON.stringify(res.data.user));
         window.location.reload(false);
+        setFetching(false);
         navigate("/login");
       }
-      else 
-      {
-        console.log(response.data.message);
+      else {
+        toast.error(res.data.message);
+        setFetching(false);
       }
-    }).catch(function (error) {
-      console.log(error)
-    })
+    } catch (err) {
+      console.log(err);
+      toast.error("Something went wrong");
+      setFetching(false);
+    }
   }
 
   const handleSubmit = (e) => {
@@ -64,8 +69,8 @@ function Login() {
   }
 
   const userAuthenticated = () => {
-    const data={
-      token:localStorage.getItem("token"),
+    const data = {
+      token: localStorage.getItem("token"),
       extra: "Pratik"
     }
     // console.log(token);
@@ -118,9 +123,11 @@ function Login() {
                 />
                 {/* <MDBInput wrapperClass='mb-4' label='Password' id='formControlLg' type='password' size="lg" ref={password} onChange={fun}/> */}
 
-                <MDBBtn className="mb-12 px-5" color='dark' size='lg' onClick={handleSubmit}>Login</MDBBtn>
-                <a className="small text-muted" href="#!">Forgot password?</a>
-                <p className="mb-5 pb-lg-2" style={{ color: '#393f81' }}>Don't have an account? <a href="#!" style={{ color: '#393f81' }}>Register here</a></p>
+                {
+                Fetching?(<div style={{margin:"auto"}}><CircularProgress /></div>)
+               : (<MDBBtn className="mb-12 px-5" color='dark' size='lg' onClick={handleSubmit}>Login</MDBBtn>)}
+
+
 
                 <div className='d-flex flex-row justify-content-start'>
                   <a href="#!" className="small text-muted me-1">Terms of use.</a>
@@ -134,6 +141,7 @@ function Login() {
         </MDBCard>
 
       </MDBContainer>
+      <Toaster />
     </div>
   );
 }

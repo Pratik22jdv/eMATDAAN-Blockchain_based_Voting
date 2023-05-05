@@ -48,12 +48,12 @@ router.post('/login', async (req, res, next) => {
     try {
         // console.log(req.session);
 
-        const user = await User.findOne({ email: req.query.email });
+        const user = await User.findOne({ email: req.body.email });
 
         if (!user) res.json({ auth: false, message: "user not found" });
         else {
 
-            const validPassword = (req.query.password == user.password);
+            const validPassword = (req.body.password == user.password);
 
             if (!validPassword) res.json({ auth: false, message: "wrong password" });
 
