@@ -47,10 +47,10 @@ function Login() {
       if (res.data.auth) {
         console.log(res.data.user);
         toast.success("Login Success");
-        localStorage.setItem("user", JSON.stringify(res.data.user));
+        localStorage.setItem("token", JSON.stringify(res.data.token));
         window.location.reload(false);
         setFetching(false);
-        navigate("/login");
+        navigate("/admin");
       }
       else {
         toast.error(res.data.message);
@@ -68,23 +68,19 @@ function Login() {
     loginCall();
   }
 
-  const userAuthenticated = () => {
-    const data = {
-      token: localStorage.getItem("token"),
-      extra: "Pratik"
-    }
-    // console.log(token);
-    axios.get("http://localhost:3000/users/isAuth", {}, {
-      headers: {
-        "x-access-token": localStorage.getItem("token"),
-      }
-    }).then(function (response) {
-      console.log(response.data);
-      console.log(response.data.token);
-    }).catch(function (error) {
-      console.log(error)
-    })
-  }
+  // const userAuthenticated = () => {
+    
+  //   axios.get("http://localhost:3000/users/isAuth", {
+  //     headers: {
+  //       "x-access-token": localStorage.getItem("token"),
+  //     }
+  //   }).then(function (response) {
+  //     console.log(response.data);
+  //     console.log(response.data.message);
+  //   }).catch(function (error) {
+  //     console.log(error)
+  //   })
+  // }
 
   return (
     <div >
@@ -111,14 +107,14 @@ function Login() {
                   placeholder="Email"
                   type="email"
                   required
-                  style={{ height: "100px" }, { borderRadius: "10px" }, { borderRadius: "10px" }, { margin: "15px" }}
+                  style={{ height: "40px",  borderRadius: "10px" ,  margin: "15px", padding:"5px 10px"}}
                   ref={emailRef}
                 />
                 <input
                   placeholder="Password"
                   type="password"
                   required
-                  style={{ padding: "20px" }, { borderRadius: "10px" }, { borderRadius: "10px" }, { margin: "15px" }}
+                  style={{ height: "40px",  borderRadius: "10px" ,  margin: "15px", padding:"5px 10px"}}
                   ref={passwordRef}
                 />
                 {/* <MDBInput wrapperClass='mb-4' label='Password' id='formControlLg' type='password' size="lg" ref={password} onChange={fun}/> */}

@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useNavigate } from 'react-router-dom';
 
 
-function Navbar({user}) {
+function Navbar({Auth}) {
 
     // const user = JSON.parse(localStorage.getItem("user"));
 
@@ -27,11 +27,15 @@ function Navbar({user}) {
                             <Link class="nav-link" to = "/register">REGISTER <span class="sr-only">(current)</span></Link>
                         </li>
 
-                        {!user && (<li class="nav-item active">
+                        {!Auth ? (<li class="nav-item active">
                             <Link class="nav-link" to="/login">LOGIN</Link>
+                        </li>)
+                        :
+                        (<li class="nav-item active">
+                            <Link class="nav-link" to="/login">ADMIN</Link>
                         </li>)}
 
-                        {user && (<li class="nav-item active">
+                        {Auth && (<li class="nav-item active">
                             <Link class="nav-link" to="/login"  onClick={logout}>Logout</Link>
                         </li>)}
 

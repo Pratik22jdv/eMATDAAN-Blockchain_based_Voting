@@ -65,11 +65,11 @@ router.post('/login', async (req, res, next) => {
                 },
                     'JWT_secret_key',
                     {
-                        expiresIn: 300,
+                        expiresIn: "1h",
                     });
                 // req.session.user = user;
                 res.status(200).json(
-                    { auth: true, user, token }
+                    { auth: true, user, token:`Bearer ${token}`, }
                 );
             }
         }
@@ -79,13 +79,14 @@ router.post('/login', async (req, res, next) => {
 });
 
 const verifyJWT = (req, res, next) => {
-    const token = req.headers["x-access-token"];
-    console.log(token);
+    // const token1 = req.headers["x-access-token"].split(" ")[1];
+    const token = req.headers["x-access-token"].substring(8, req.headers["x-access-token"].length-1);
+    
     if (!token) {
         res.send("No Token");
     }
     else {
-        jwt.verify(token, "JWT_secret_key", (err, decode) => {
+        jwt.verify(token, "JWT_secret_key", (err, decoded) => {
             if (err) {
                 console.log(err);
                 res.json({ auth: false, message: "Auth Failed" })
@@ -99,7 +100,7 @@ const verifyJWT = (req, res, next) => {
 }
 
 router.get('/isAuth', verifyJWT, (req, res) => {
-    res.send("Authenticated");
+    res.send({auth: true, message: "Authenticated"});
 })
 
 router.get('/login', async (req, res) => {
@@ -124,7 +125,7 @@ const authAdmin = async (req, res, next) => {
 }
 
 //Fetch User
-router.get('/all', authAdmin, async (req, res) => {
+router.get('/all', verifyJWT, async (req, res) => {
     try {
         const list = await User.find();
         res.status(200).json(list);

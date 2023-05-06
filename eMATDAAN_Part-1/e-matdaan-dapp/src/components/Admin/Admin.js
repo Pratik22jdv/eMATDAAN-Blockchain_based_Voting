@@ -13,15 +13,15 @@ import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import { CircularProgress } from "@mui/material";
 import toast, { Toaster } from "react-hot-toast";
 import { Button, Typography } from "@mui/material";
-import {Box, Modal} from "@mui/material";
+import { Box, Modal } from "@mui/material";
 import { Link } from "react-router-dom";
 import bcrypt from 'bcryptjs';
 
 
 
-function Admin({ user }) {
+function Admin() {
     const salt = bcrypt.genSaltSync(10);
-    
+
     const [userList, setUserList] = useState([]);
     const [isFetching, setFetching] = useState({});
     const [open, setOpen] = useState(false);
@@ -38,29 +38,29 @@ function Admin({ user }) {
         border: "2px solid #000",
         boxShadow: 24,
         p: 4,
-      };
+    };
 
 
     // const notifySuccess = (message) => toast.success(message);
 
     const apiFetchList = () => {
-        return fetch(
-            `http://localhost:3000/users/all?adminEmail=${user.email}`,
-            {
-                method: 'GET',
+         axios.get(
+            `http://localhost:3000/users/all`, {
+            headers: {
+                "x-access-token": localStorage.getItem("token"),
             }
-        )
-            .then((response) => {
-                return response.json();
+        })
+            .then((res) => {
+                setUserList(res.data);
+                console.log(res.data);
             })
             .catch((err) => console.log(err));
     };
 
-    const fetchUserList = () => {
-        apiFetchList().then((data) => {
-            setUserList(data);
-        })
-    };
+    // const fetchUserList = () => {
+    //     apiFetchList();
+    //     })
+    // };
 
     // function createData(
     //     name: string,
@@ -100,12 +100,12 @@ function Admin({ user }) {
     //     createData('Gingerbread', 356, 16.0, 49, 3.9),
     // ];
 
-    
+
 
     //Modal open with user details
     const handleOpen = (user) => {
-        if(user.votePassword)var temp = bcrypt.hashSync(user.votePassword, '$2a$10$CwTycUXWue0Thq9StjUM0u');
-        if(user.votePassword)user.votePassword  = temp;
+        if (user.votePassword) var temp = bcrypt.hashSync(user.votePassword, '$2a$10$CwTycUXWue0Thq9StjUM0u');
+        if (user.votePassword) user.votePassword = temp;
         setUserData(user);
         setOpen(true);
     };
@@ -114,10 +114,10 @@ function Admin({ user }) {
 
 
     const setUserApproved = async (userObj) => {
-        
+
         setFetching({ ...isFetching, user: userObj._id });
         const res = await axios.put("http://localhost:3000/users/approvalChange/" + userObj._id);
-        
+
         const pass = res.data.votePassword;
         let editedUser = userList.filter((user) => {
             return user._id === userObj._id;
@@ -134,10 +134,10 @@ function Admin({ user }) {
                 break;
             }
         }
-        
+
         let newUserList = [
             ...userList.slice(0, editedUserIndex),
-            { ...editedUser[0], approved: true , votePassword: pass.toString()},
+            { ...editedUser[0], approved: true, votePassword: pass.toString() },
             ...userList.slice(editedUserIndex + 1, userList.length),
         ];
         setFetching({ ...isFetching, user: "" });
@@ -148,7 +148,7 @@ function Admin({ user }) {
 
 
     useEffect(() => {
-        fetchUserList();
+        apiFetchList();
     }, []);
 
     return (
@@ -170,7 +170,7 @@ function Admin({ user }) {
                                     key={userObj.email}
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
-                                    <StyledTableCell onClick={()=>{handleOpen(userObj)}} component="th" scope="row">
+                                    <StyledTableCell onClick={() => { handleOpen(userObj) }} component="th" scope="row">
                                         <Link>{userObj.email}</Link>
                                     </StyledTableCell>
                                     <StyledTableCell >{userObj.firstName + " " + userObj.lastName}</StyledTableCell>
@@ -211,8 +211,8 @@ function Admin({ user }) {
                                 </Typography>
 
                                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                    <span className="me-4">Name: {" "}{userData?.firstName? userData?.firstName: null}{" "}
-                                    {userData?.lastName ?userData.lastName : " "}</span>
+                                    <span className="me-4">Name: {" "}{userData?.firstName ? userData?.firstName : null}{" "}
+                                        {userData?.lastName ? userData.lastName : " "}</span>
                                 </Typography>
 
                                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
@@ -221,7 +221,7 @@ function Admin({ user }) {
 
                                 <Typography>
                                     <span className="me-4">
-                                       Vote Password:
+                                        Vote Password:
                                         {userData?.votePassword ? userData.votePassword : "Not Provided"}
                                     </span>
                                 </Typography>

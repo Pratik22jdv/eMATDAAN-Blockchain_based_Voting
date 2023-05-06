@@ -1,9 +1,11 @@
-import {React, useState, useEffect} from "react";
+import { React, useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
-  Route
+  Route,
+  Navigate
 } from "react-router-dom";
+import axios from 'axios';
 
 import './App.css';
 import Navbar from './components/Navbar';
@@ -14,32 +16,60 @@ import Admin from "./components/Admin/Admin";
 
 function App() {
 
-  const [user, setuser] = useState(() => {
- 
-    // Used local storage to sustain the login state
-    if(!localStorage.getItem("user")){
-      
-      return false;
+  // const [user, setuser] = useState(() => {
+
+  //   // Used local storage to sustain the login state
+  //   if (!localStorage.getItem("user")) {
+
+  //     return false;
+  //   }
+  //   return JSON.parse(localStorage.getItem("user"));
+  // });
+
+  const [Auth, setAuth] = useState(false);
+
+  const userAuthenticated = () => {
+    const token = localStorage.getItem("token");
+
+    if(!token){
+      setAuth(false);
+      return;
     }
-    return JSON.parse(localStorage.getItem("user"));
-  });
-  
+
+    axios.get("http://localhost:3000/users/isAuth", {
+      headers: {
+        "x-access-token": token,
+      }
+    }).then(function (res) {
+
+      if(res.data.auth) setAuth(true);
+      else setAuth(false);
+      console.log(res.data);
+
+    }).catch(function (error) {
+      setAuth(false);
+      console.log(error)
+    })
+  }
+
 
   useEffect(() => {
-    localStorage.setItem("user", JSON.stringify(user));
-  }, [user]);
+    userAuthenticated();
+  }, []);
 
   return (
     <div>
       <Router>
         <div>
-          <Navbar user = {user}/>
+          <Navbar Auth={Auth} />
         </div>
         <Routes>
 
-        <Route exact path="/" element={<Home/>} />
+          <Route exact path="/" element={<Home />} />
 
-          <Route path="/login" element= {user? <Admin user={user}/> : <Login /> } />
+          <Route path="/login" element={Auth ? <Navigate to = "/admin" /> : <Login />} />
+
+          <Route path = "/admin" element = {Auth ? <Admin /> : <Navigate to = "/login"/>} />
 
           <Route path="/register" element={<Registration />} />
 
